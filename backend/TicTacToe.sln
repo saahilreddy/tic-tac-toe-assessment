@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11925.98 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Domain", "TicTacToe.Domain\TicTacToe.Domain.csproj", "{1E2DF826-0A98-4E1F-B5CE-B13E0A38D4C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Application", "TicTacToe.Application\TicTacToe.Application.csproj", "{3D4EA920-9D10-4F78-AF6D-B31E9ABCE9A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Infrastructure", "TicTacToe.Infrastructure\TicTacToe.Infrastructure.csproj", "{5A1B20C9-5AF4-4E3E-A0B7-25DCE5E2D0E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Api", "TicTacToe.Api\TicTacToe.Api.csproj", "{7E7FCD97-0E1C-46B1-9581-DB2CBF2DDB7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Tests", "TicTacToe.Tests\TicTacToe.Tests.csproj", "{C7646DAB-9F34-40EF-A8D5-C128E560D6B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E2DF826-0A98-4E1F-B5CE-B13E0A38D4C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E2DF826-0A98-4E1F-B5CE-B13E0A38D4C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E2DF826-0A98-4E1F-B5CE-B13E0A38D4C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E2DF826-0A98-4E1F-B5CE-B13E0A38D4C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4EA920-9D10-4F78-AF6D-B31E9ABCE9A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4EA920-9D10-4F78-AF6D-B31E9ABCE9A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4EA920-9D10-4F78-AF6D-B31E9ABCE9A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4EA920-9D10-4F78-AF6D-B31E9ABCE9A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A1B20C9-5AF4-4E3E-A0B7-25DCE5E2D0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1B20C9-5AF4-4E3E-A0B7-25DCE5E2D0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1B20C9-5AF4-4E3E-A0B7-25DCE5E2D0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1B20C9-5AF4-4E3E-A0B7-25DCE5E2D0E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E7FCD97-0E1C-46B1-9581-DB2CBF2DDB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E7FCD97-0E1C-46B1-9581-DB2CBF2DDB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E7FCD97-0E1C-46B1-9581-DB2CBF2DDB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E7FCD97-0E1C-46B1-9581-DB2CBF2DDB7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7646DAB-9F34-40EF-A8D5-C128E560D6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7646DAB-9F34-40EF-A8D5-C128E560D6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7646DAB-9F34-40EF-A8D5-C128E560D6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7646DAB-9F34-40EF-A8D5-C128E560D6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

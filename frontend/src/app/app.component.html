@@ -1,0 +1,151 @@
+<main class="page-shell">
+  <section class="app-card" aria-labelledby="app-title">
+    <header class="app-header">
+      <div>
+        <h1 id="app-title">Tic Tac Toe</h1>
+      </div>
+
+      @if (game(); as currentGame) {
+        <div class="turn-card" [class.completed]="currentGame.gameStatus !== 'InProgress'">
+          @if (currentGame.gameStatus === 'InProgress') {
+            <span class="turn-label">Current turn</span>
+            <strong>{{ currentGame.currentPlayer }}</strong>
+          } @else if (currentGame.gameStatus === 'Won') {
+            <span class="turn-label">Winner</span>
+            <strong>Player {{ currentGame.winner }}</strong>
+          } @else {
+            <span class="turn-label">Result</span>
+            <strong>Draw</strong>
+          }
+        </div>
+      }
+    </header>
+
+    @if (errorMessage()) {
+      <div class="alert error" role="alert">{{ errorMessage() }}</div>
+    }
+
+    @if (noticeMessage()) {
+      <div class="alert notice" role="status">{{ noticeMessage() }}</div>
+    }
+
+    <div class="toolbar">
+      <div class="mode-group" role="group" aria-label="Game mode">
+        <span class="toolbar-label">Game mode</span>
+        <button type="button"
+                [class.active]="selectedMode() === 'TwoPlayer'"
+                [disabled]="busy()"
+                (click)="setMode('TwoPlayer')">
+          Two Player
+        </button>
+        <button type="button"
+                [class.active]="selectedMode() === 'Computer'"
+                [disabled]="busy()"
+                (click)="setMode('Computer')">
+          Play Against Computer
+        </button>
+      </div>
+
+      <div class="action-group">
+        <button type="button" class="secondary" [disabled]="!canUndo()" (click)="undo()">
+          Undo Last Move
+        </button>
+        <button type="button" class="secondary" [disabled]="busy() || !game()" (click)="resetGame()">
+          Reset Game
+        </button>
+        <button type="button" class="danger" [disabled]="busy()" (click)="resetScoreboard()">
+          Reset Scoreboard
+        </button>
+      </div>
+    </div>
+
+    @if (game(); as currentGame) {
+      <section class="game-layout">
+        <div class="board-panel">
+          <div class="status-banner" [class.won]="currentGame.gameStatus === 'Won'" [class.draw]="currentGame.gameStatus === 'Draw'">
+            @switch (currentGame.gameStatus) {
+              @case ('InProgress') {
+                @if (currentGame.gameMode === 'Computer' && currentGame.currentPlayer === 'O') {
+                  Computer is choosing a move…
+                } @else {
+                  Player {{ currentGame.currentPlayer }}, select a cell.
+                }
+              }
+              @case ('Won') {
+                Player {{ currentGame.winner }} wins. Winning cells are highlighted.
+              }
+              @case ('Draw') {
+                The game is a draw.
+              }
+            }
+          </div>
+
+          <div class="board" role="grid" aria-label="Tic Tac Toe board">
+            @for (index of boardCells; track index) {
+              <button
+                type="button"
+                class="cell"
+                [class.winning]="isWinningCell(index)"
+                [disabled]="isCellDisabled(index)"
+                [attr.aria-label]="cellLabel(index)"
+                role="gridcell"
+                (click)="playCell(index)">
+                {{ currentGame.board[index] }}
+              </button>
+            }
+          </div>
+
+          <div class="game-meta">
+            <span>{{ currentGame.gameMode === 'Computer' ? 'Human: X · Computer: O' : 'X vs O' }}</span>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <section class="panel-card">
+            <div class="panel-heading">
+              <h2>Scoreboard</h2>
+              <span>Session level</span>
+            </div>
+            <div class="score-grid">
+              <div><strong>{{ currentGame.scoreboard.xWins }}</strong><span>X wins</span></div>
+              <div><strong>{{ currentGame.scoreboard.oWins }}</strong><span>O wins</span></div>
+              <div><strong>{{ currentGame.scoreboard.draws }}</strong><span>Draws</span></div>
+            </div>
+          </section>
+
+          <section class="panel-card">
+            <div class="panel-heading">
+              <h2>Move History</h2>
+              <span>{{ currentGame.moveHistory.length }} moves</span>
+            </div>
+
+            @if (currentGame.moveHistory.length > 0) {
+              <div class="history-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Move</th>
+                      <th>Player</th>
+                      <th>Position</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (move of currentGame.moveHistory; track move.moveNumber) {
+                      <tr>
+                        <td>{{ move.moveNumber }}</td>
+                        <td>{{ move.player }}</td>
+                        <td>Row {{ move.row + 1 }}, Column {{ move.column + 1 }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <p class="empty-state">No moves yet.</p>
+            }
+          </section>
+        </aside>
+      </section>
+    }
+  </section>
+</main>
