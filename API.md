@@ -3,13 +3,13 @@
 Base URL:
 
 ```text
-http://localhost:5000/api/v1
+http://localhost:62167/api/v1
 ```
 
 Swagger UI:
 
 ```text
-http://localhost:5000/swagger
+http://localhost:62167/swagger
 ```
 
 ## Resources
