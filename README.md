@@ -1,1050 +1,531 @@
-# Tic Tac Toe — Angular 19 + ASP.NET Core 10
+Tic Tac Toe — Angular 19 + ASP.NET Core 10
 
-## 1. Project Overview
+1. Project Overview
 
-This repository contains a full-stack Tic Tac Toe application developed as a technical assessment.
+Full-stack browser-based Tic Tac Toe implementation for the technical assessment.
 
-The solution consists of:
+Angular 19 + TypeScript frontend
 
-* **Angular 19** frontend using TypeScript.
-* **ASP.NET Core 10 Web API** backend.
-* REST APIs versioned under `/api/v1`.
-* Backend-owned game and scoreboard state.
-* Two game modes:
+ASP.NET Core 10 Web API backend
 
-  * Two Player
-  * Play Against Computer
-* Move history and mode-specific undo.
-* Win and draw detection.
-* Winning-cell highlighting.
-* Optimistic concurrency using an aggregate version.
-* Clean Architecture with Domain, Application, Infrastructure, and API layers.
-* MediatR-based commands and queries.
-* FluentValidation for request validation.
-* Centralized exception handling using `ProblemDetails`.
-* Swagger/OpenAPI documentation.
-* Health checks.
-* Structured logging and OpenTelemetry instrumentation.
-* Automated backend and frontend tests.
+REST API under /api/v1
 
-The application intentionally uses **in-memory persistence** because persistent database storage was not required for the assessment.
+Backend-owned game state, move history, and scoreboard
 
----
+Two Player and Play Against Computer modes
 
-## 2. Tech Stack
+Mode-specific undo, win/draw detection, and winning-cell highlighting
 
-### Frontend
+Clean Architecture with Domain, Application, Infrastructure, and API layers
 
-| Technology                  | Version |
-| --------------------------- | ------- |
-| Angular                     | 19.2    |
-| TypeScript                  | 5.7.2   |
-| RxJS                        | 7.8.1   |
-| Zone.js                     | 0.15    |
-| Node.js                     | 22      |
-| npm                         | 10+     |
-| Jasmine Core                | 7.0.2   |
-| Jasmine Type Definitions    | 6.0.0   |
-| Karma                       | 6.4.4   |
-| Karma Jasmine               | 5.1.0   |
-| Karma Chrome Launcher       | 3.2.0   |
-| Karma Jasmine HTML Reporter | 2.3.0   |
+CQRS-style commands/queries with MediatR
 
-Frontend state is managed using **Angular Signals**, while HTTP communication is handled through Angular `HttpClient`.
+FluentValidation, ProblemDetails, Swagger/OpenAPI, health checks
 
-### Backend
+In-memory persistence
 
-* .NET 10
-* ASP.NET Core Web API
-* C#
-* MediatR
-* FluentValidation
-* Clean Architecture
-* CQRS-style commands and queries
-* Repository pattern
-* In-memory repositories
-* ASP.NET Core ProblemDetails
-* API Versioning
-* Swagger / OpenAPI
-* Health Checks
-* `ILogger<T>` structured logging
-* OpenTelemetry
-* xUnit-based automated tests
+Automated backend and frontend tests
 
-### Development Tools
+Detailed requirement mapping: REQUIREMENTS-TRACEABILITY.md
 
-* Git
-* GitHub
-* Visual Studio / Visual Studio Code
-* Swagger UI
-* Chrome / ChromeHeadless
+2. Tech Stack
 
----
+Frontend
 
-## 3. Features Implemented
+Technology
 
-### Game Management
+Version
 
-* Create a new Tic Tac Toe game.
-* Support for a 3 × 3 board.
-* Two Player mode.
-* Play Against Computer mode.
-* Maintain the current player.
-* Maintain complete move history.
-* Reset the current game.
-* Backend remains the source of truth for game state.
+Angular
 
-### Game Rules
+19.2
 
-The backend domain layer validates:
+TypeScript
 
-* Valid board positions.
-* Empty-cell requirement.
-* Correct player turn.
-* Moves after game completion.
-* Row wins.
-* Column wins.
-* Diagonal wins.
-* Draw conditions.
-* Winning-cell identification.
+5.7.2
 
-### Computer Opponent
+RxJS
 
-The computer player follows a deterministic priority strategy:
+7.8.1
 
-1. Win if a winning move is available.
-2. Block the opponent's winning move.
-3. Take the center.
-4. Take a corner.
-5. Take any remaining available cell.
+Zone.js
 
-### Undo
+0.15
 
-Two Player mode:
+Node.js
 
-* Undo removes the most recent move.
+22
 
-Computer mode:
+npm
 
-* Undo removes the human X move and corresponding computer O move together.
+10+
 
-Undo is intentionally disabled after the game has completed.
+Jasmine Core
 
-### Scoreboard
+5.6.x
 
-The application maintains:
+@types/jasmine
 
-* X wins
-* O wins
-* Draws
+5.1.x
 
-Completed games update the scoreboard only once using game-ID-based idempotency.
+Karma
 
-Resetting a game does not modify the scoreboard.
+6.4.4
 
-### Concurrency
+Karma Jasmine
 
-Game mutations use optimistic concurrency.
+5.1.x
 
-Each game maintains a `Version`.
+Karma Chrome Launcher
 
-The client sends an `expectedVersion` with mutations.
+3.2.0
 
-If another operation has already changed the game, the backend returns:
+Karma Coverage
 
-```text
-409 Conflict
-```
+2.2.1
 
-This prevents stale clients from overwriting newer game state.
+Angular Signals are used for reactive UI state and HttpClient for API communication.
 
-### API and Infrastructure
+Backend
 
-* Versioned REST API.
-* Swagger/OpenAPI.
-* Centralized exception handling.
-* RFC 7807-style ProblemDetails responses.
-* Health endpoints.
-* Structured JSON logging.
-* OpenTelemetry tracing and metrics.
-* CORS configuration for the Angular application.
+.NET 10 / ASP.NET Core Web API
 
----
+C#
 
-## 4. How to Run the Backend Locally
+Clean Architecture
 
-### Prerequisites
+CQRS-style commands and queries
 
-Install:
+MediatR
 
-* .NET 10 SDK
-* Node.js 22
-* npm 10+
-* Git
+FluentValidation
 
-Verify the .NET SDK:
+Repository pattern with in-memory repositories
 
-```bash
-dotnet --version
-```
+ProblemDetails
 
-Verify Node.js:
+API Versioning
 
-```bash
-node --version
-```
+Swagger/OpenAPI
 
-Verify npm:
+Health Checks
 
-```bash
-npm --version
-```
+Structured logging with ILogger<T>
 
-### Restore and Build
+OpenTelemetry
+
+xUnit
+
+3. Features Implemented
+
+Game
+
+3 × 3 board
+
+Two Player mode
+
+Play Against Computer mode
+
+Current-player tracking
+
+Move history
+
+Reset Game
+
+Backend is the source of truth
+
+Rules
+
+Valid/invalid move validation
+
+Row, column, and diagonal win detection
+
+Draw detection
+
+Winning-cell identification
+
+No moves after game completion
+
+Scoreboard update on completion
+
+Computer
+
+Computer is deterministic and follows the required priority:
+
+Win if possible
+
+Block X if necessary
+
+Take center
+
+Take a corner
+
+Take any available cell
+
+Undo
+
+Two Player: remove the latest move
+
+Computer mode: remove the human X move and corresponding computer O move
+
+Undo disabled after completion
+
+Scoreboard
+
+Tracks:
+
+X wins
+
+O wins
+
+Draws
+
+Completed games update the scoreboard once using game-ID-based idempotency. Resetting a game does not reset the scoreboard.
+
+Concurrency
+
+Game mutations use optimistic concurrency through a Version/expectedVersion check. Stale mutations return 409 Conflict.
+
+4. How to Run the Backend Locally
+
+Prerequisites
+
+.NET 10 SDK
+
+Node.js 22
+
+npm 10+
+
+Git
+
+Restore, build, and run
 
 From the repository root:
 
-```bash
 cd backend
 dotnet restore
 dotnet build
-```
-
-### Run Backend
-
-Run the API using the HTTP launch profile:
-
-```bash
 dotnet run --project TicTacToe.Api --launch-profile http
-```
 
-The backend is available at:
+Backend:
 
-```text
 http://localhost:62167
-```
 
-### Swagger
+Swagger:
 
-Swagger UI:
-
-```text
 http://localhost:62167/swagger
-```
 
-Swagger can be used to inspect and manually execute all API endpoints.
+Health endpoints:
 
-### Health Checks
-
-Liveness:
-
-```text
 http://localhost:62167/health/live
-```
-
-Readiness:
-
-```text
 http://localhost:62167/health/ready
-```
 
----
-
-## 5. How to Run the Frontend Locally
-
-### Install Dependencies
+5. How to Run the Frontend Locally
 
 From the repository root:
 
-```bash
 cd frontend
 npm install
-```
-
-### Start Angular
-
-```bash
 npm start
-```
 
-The Angular application runs at:
+Frontend:
 
-```text
 http://localhost:4200
-```
 
-### API Communication
+Local API requests use frontend/proxy.conf.json and are routed to:
 
-During local development, Angular uses the configured proxy:
-
-```text
-frontend/proxy.conf.json
-```
-
-API requests are routed to:
-
-```text
 http://localhost:62167
-```
 
-The application communicates with the versioned API under:
+The frontend calls the versioned API under:
 
-```text
 /api/v1
-```
 
-### Production Build
+Production build:
 
-To create a production build:
-
-```bash
 npm run build
-```
 
----
-
-## 6. API Endpoint Summary
+6. API Endpoint Summary
 
 Base URL:
 
-```text
 http://localhost:62167/api/v1
-```
 
-### Create Game
+Method
 
-```http
-POST /games
-```
+Endpoint
 
-Request:
+Purpose
 
-```json
-{
-  "mode": "TwoPlayer"
-}
-```
+POST
 
-Supported modes:
+/games
 
-```text
-TwoPlayer
-Computer
-```
+Create game
 
-Returns:
+GET
 
-```text
+/games/{id}
+
+Get game
+
+GET
+
+/games/{id}/state
+
+Get current state
+
+GET
+
+/games/{id}/moves
+
+Get move history
+
+POST
+
+/games/{id}/moves
+
+Submit move
+
+POST
+
+/games/{id}/undo
+
+Undo
+
+POST
+
+/games/{id}/reset
+
+Reset game
+
+GET
+
+/scoreboard
+
+Get scoreboard
+
+POST
+
+/scoreboard/reset
+
+Reset scoreboard
+
+Move requests include the game ID, player, row/column, and expectedVersion.
+
+The backend validates game existence, game status, coordinates, cell availability, turn ownership, computer-mode rules, and expected version.
+
+Common responses:
+
+200 OK
+
 201 Created
-```
 
-with the created game state.
-
----
-
-### Get Game
-
-```http
-GET /games/{id}
-```
-
-Returns the current game.
-
-Possible responses:
-
-```text
-200 OK
-404 Not Found
-```
-
----
-
-### Get Game State
-
-```http
-GET /games/{id}/state
-```
-
-Returns the current state of the game.
-
----
-
-### Get Move History
-
-```http
-GET /games/{id}/moves
-```
-
-Returns the moves currently recorded for the game.
-
----
-
-### Submit Move
-
-```http
-POST /games/{id}/moves
-```
-
-Request:
-
-```json
-{
-  "gameId": "GUID",
-  "player": "X",
-  "row": 0,
-  "column": 0,
-  "expectedVersion": 0
-}
-```
-
-The backend validates:
-
-* Route game ID matches body game ID.
-* Game exists.
-* Game is still in progress.
-* Row and column are valid.
-* Cell is empty.
-* Player is the current player.
-* Computer mode accepts human X moves.
-* Expected version matches the current game version.
-
-Possible responses:
-
-```text
-200 OK
 400 Bad Request
+
 404 Not Found
+
 409 Conflict
-```
 
----
+500 Internal Server Error
 
-### Undo
+Detailed API contract and examples: API.md
 
-```http
-POST /games/{id}/undo
-```
+7. How to Run Tests
 
-Request:
+Backend
 
-```json
-{
-  "expectedVersion": 2
-}
-```
-
-Behavior:
-
-* Two Player mode → removes one move.
-* Computer mode → removes the X/O move pair.
-* Completed games → undo is rejected/disabled by design.
-
----
-
-### Reset Game
-
-```http
-POST /games/{id}/reset
-```
-
-Request:
-
-```json
-{
-  "expectedVersion": 5
-}
-```
-
-Creates a fresh game session using the same game mode.
-
-The scoreboard is not modified.
-
----
-
-### Get Scoreboard
-
-```http
-GET /scoreboard
-```
-
-Example response:
-
-```json
-{
-  "xWins": 1,
-  "oWins": 2,
-  "draws": 1
-}
-```
-
----
-
-### Reset Scoreboard
-
-```http
-POST /scoreboard/reset
-```
-
-Resets the session scoreboard.
-
----
-
-### Status Codes
-
-| Status | Meaning                                  |
-| ------ | ---------------------------------------- |
-| 200    | Successful read/mutation                 |
-| 201    | Game created                             |
-| 400    | Invalid input or game-rule violation     |
-| 404    | Game does not exist                      |
-| 409    | Optimistic concurrency conflict          |
-| 500    | Unexpected server/infrastructure failure |
-
-### Error Contract
-
-Exceptional failures are returned using `application/problem+json`.
-
-Example:
-
-```json
-{
-  "type": "https://localhost/errors/concurrency-conflict",
-  "title": "Concurrency conflict",
-  "status": 409,
-  "detail": "The game changed before your move could be saved. Refresh the game and try again.",
-  "instance": "/api/v1/games/.../moves",
-  "traceId": "..."
-}
-```
-
-For the complete API contract, see:
-
-```text
-API.md
-```
-
-Swagger is also available locally at:
-
-```text
-http://localhost:62167/swagger
-```
-
----
-
-## 7. How to Run Tests
-
-The solution contains tests at multiple levels.
-
-### Backend Tests
-
-From the backend directory:
-
-```bash
 cd backend
 dotnet test
-```
 
-The backend tests cover:
+For the CI-style Release run:
 
-### Domain Tests
+dotnet test --no-build --configuration Release
 
-* Game rules.
-* Valid and invalid moves.
-* Row wins.
-* Column wins.
-* Diagonal wins.
-* Draw detection.
-* Winning-cell detection.
-* Move history.
-* Undo state reconstruction.
-* Computer move priority.
+The repository targets .NET 10 and opts into Microsoft Testing Platform through global.json.
 
-### Application Tests
+Coverage includes:
 
-* Command handlers.
-* Query handlers.
-* Scoreboard behavior.
-* Scoreboard idempotency.
-* Computer-mode undo.
-* Optimistic concurrency.
+Valid and invalid moves
 
-### API Integration Tests
+Turn switching
 
-* Game creation.
-* Invalid moves.
-* ProblemDetails responses.
-* API behavior and HTTP status codes.
+Row/column/diagonal wins
 
-### Frontend Tests
+Draws
 
-From the frontend directory:
+Reset
 
-```bash
+Two Player undo
+
+Computer-mode undo
+
+Scoreboard behavior and idempotency
+
+Computer move selection
+
+Move-after-completion handling
+
+API/HTTP behavior and error responses
+
+Frontend
+
 cd frontend
 npm test
-```
 
-This executes:
+This runs:
 
-```bash
 ng test --watch=false --browsers=ChromeHeadless
-```
 
-Frontend unit tests cover:
+Frontend tests cover game state, move handling, turn changes, win/draw state, undo, reset, scoreboard, and computer-mode UI behavior.
 
-* Game state.
-* Move handling.
-* Turn changes.
-* Win/draw state.
-* Undo.
-* Reset.
-* Scoreboard.
-* Computer mode.
-* UI state updates.
+8. AI Tools and Prompt Summary
 
-### Test Strategy
+AI-assisted development was used as a development aid.
 
-```text
-Tests
-│
-├── Backend
-│   ├── Domain unit tests
-│   ├── Application tests
-│   └── API integration tests
-│
-└── Frontend
-    └── Jasmine / Karma unit tests
-```
+Main areas
 
-The test suite is designed to validate business rules at the domain level, use-case behavior at the application level, HTTP behavior at the API level, and UI behavior at the Angular level.
+Requirement-to-architecture mapping
 
----
+Clean Architecture and CQRS structure
 
-## 8. AI Tools and Prompt Summary
+API contract and validation design
 
-AI-assisted development was used as a development aid during the implementation.
+Game rules and computer-move strategy
 
-### Areas Where AI Assistance Was Used
+Optimistic concurrency
 
-AI assistance was used for:
+Test scenario generation/review
 
-* Initial project structure and architecture discussion.
-* Clean Architecture organization.
-* CQRS/MediatR structure.
-* API contract design.
-* Game-rule implementation ideas.
-* Computer-player decision logic.
-* Optimistic concurrency design.
-* FluentValidation implementation.
-* Exception handling and ProblemDetails.
-* Unit and integration test scenarios.
-* Angular component and service structure.
-* Angular Signals usage.
-* Code review and refactoring suggestions.
-* README and API documentation preparation.
+Angular Signals and service structure
 
-### Prompt Categories
+Troubleshooting build/test issues
 
-Representative prompts included:
+README/API documentation
 
-```text
+Representative prompt types
+
 Design a Clean Architecture structure for an ASP.NET Core Tic Tac Toe API.
 
-How should game state and scoreboard state be separated from the API layer?
+Design backend-owned game state, move history, scoreboard, and undo behavior.
 
-Design optimistic concurrency for a game aggregate using a version number.
+Design optimistic concurrency using a game version and expectedVersion.
 
-What validation rules should be applied when submitting a Tic Tac Toe move?
+Create the required deterministic computer strategy: win, block, center, corner, any.
 
-How should undo behave differently in Two Player and Computer modes?
+Suggest unit and integration tests for the assessment scenarios.
 
-Create a deterministic computer move strategy with the priority:
-win, block, center, corner, any available cell.
+Review Angular Signals usage while keeping the backend as the source of truth.
 
-Suggest unit and integration test scenarios for the Tic Tac Toe domain and API.
+AI output was reviewed and adapted against the assignment, existing architecture, Angular/.NET conventions, testability, and maintainability. Final implementation decisions were manually reviewed.
 
-How should Angular Signals be used for local game state while keeping the backend as the source of truth?
+9. Design Decisions
 
-Review the implementation for separation of concerns and potential concurrency issues.
-```
+Clean Architecture
 
-### AI Usage Approach
+Dependency direction is inward:
 
-AI-generated suggestions were treated as development assistance rather than blindly copied implementation.
+API → Application → Domain
+Infrastructure → Application / Domain abstractions
 
-The generated recommendations were reviewed and adapted based on:
+The Domain does not depend on ASP.NET Core, persistence, or Infrastructure implementations.
 
-* Assessment requirements.
-* Existing project architecture.
-* Angular 19 conventions.
-* ASP.NET Core practices.
-* Maintainability.
-* Testability.
-* Separation of concerns.
+Domain-Owned Rules
 
-Final implementation decisions remained aligned with the assessment requirements.
+Game and GameRules own game-specific rules such as move validation, turn handling, win/draw detection, winning cells, completion, and undo state reconstruction.
 
----
+CQRS / MediatR
 
-## 9. Design Decisions
+Commands handle state changes; queries handle reads. MediatR coordinates the application use cases.
 
-### Clean Architecture
+Repository Abstraction
 
-The backend is separated into:
+IGameRepository and IScoreboardRepository abstract persistence. The current implementation is in-memory and can be replaced without moving business rules into Infrastructure.
 
-```text
+Backend as Source of Truth
+
+The frontend renders the latest state returned by the backend rather than maintaining an independent authoritative game state.
+
+Optimistic Concurrency
+
+Mutations carry expectedVersion. A mismatch produces 409 Conflict instead of silently overwriting newer state.
+
+Angular Signals
+
+Signals provide reactive UI state for board, player, status, winner, moves, and scoreboard.
+
+No SignalR
+
+REST is sufficient for the assessment's single-browser interaction model; real-time server push was not required.
+
+10. Clarifications and Assumptions
+
+Storage
+
+In-memory persistence is used, which is permitted by the assessment.
+
+Game Session
+
+Each game has a generated game ID and is owned by the backend for the lifetime of the running application.
+
+Undo
+
+Two Player: remove one move
+
+Computer mode: remove the X/O pair
+
+The implementation follows Clarification Option A from the assessment: Undo is disabled after a game is completed, so the completed scoreboard result remains final.
+
+Scoreboard
+
+The scoreboard is session-level. Reset Game does not reset it. A completed game contributes only once.
+
+Computer
+
+Human player = X; computer = O. The strategy is deterministic and rule-based, not AI/ML-driven.
+
 API
- ↓
-Application
- ↓
-Domain
-```
 
-Infrastructure provides implementations required by the application.
+The API is versioned under /api/v1 to provide a clear boundary for future changes.
 
-The domain does not depend on ASP.NET Core, MediatR, FluentValidation, or persistence implementations.
+11. Known Limitations
 
-This keeps business rules independent from infrastructure and HTTP concerns.
+Game and scoreboard data are lost when the API restarts.
 
-### Domain-Owned Business Rules
+Multiple backend instances do not share the same in-memory state.
 
-The `Game` aggregate and `GameRules` are responsible for game-specific business rules.
+The solution is intended for local/single-process assessment use.
 
-Examples:
+The computer opponent uses a basic deterministic strategy rather than Minimax or adaptive AI.
 
-* Valid moves.
-* Turn validation.
-* Win detection.
-* Draw detection.
-* Winning cells.
-* Game completion.
-* Undo state reconstruction.
+No authentication or user-specific game ownership.
 
-This avoids putting core game logic inside controllers.
+No SignalR/WebSocket real-time multiplayer.
 
-### CQRS / MediatR
+Frontend tests require a compatible Chrome/Chromium environment for ChromeHeadless.
 
-Commands and queries separate state-changing operations from reads.
+12. Future Improvements
 
-Examples include:
+Replace in-memory repositories with SQL Server, PostgreSQL, or Cosmos DB.
 
-```text
-CreateGame
-MakeMove
-UndoMove
-ResetGame
-GetGame
-GetGameState
-GetMoves
-GetScoreboard
-ResetScoreboard
-```
+Support distributed deployments with shared persistent state.
 
-MediatR handlers coordinate the relevant application use cases.
+Add authentication and user-specific games/scoreboards.
 
-### Repository Abstraction
+Add SignalR for real-time multiplayer and live updates.
 
-The application uses:
+Add stronger computer AI and difficulty levels.
 
-```text
-IGameRepository
-IScoreboardRepository
-```
+Persist completed games for replay and statistics.
 
-The current implementation is in-memory.
+Expand CI/CD with security, packaging, and deployment stages.
 
-This allows the persistence implementation to be replaced later without changing the domain rules or API contracts.
+Centralize OpenTelemetry logs, metrics, traces, dashboards, and alerting.
 
-### Backend as the Source of Truth
+Add further API contract testing and advanced error handling.
 
-The Angular application does not independently determine the authoritative game state.
+Project Structure
 
-After a mutation, the frontend uses the state returned by the backend.
-
-This prevents client-side state from becoming inconsistent with the server.
-
-### Optimistic Concurrency
-
-A game contains a version value.
-
-Mutating requests provide an `expectedVersion`.
-
-The repository compares the expected version with the current version before applying an update.
-
-A mismatch results in a conflict instead of silently overwriting newer state.
-
-### ProblemDetails
-
-Expected game-rule failures are handled as application/domain results where appropriate.
-
-Unexpected exceptions are handled centrally through the global exception handler and converted into `ProblemDetails`.
-
-This provides a consistent error contract to clients.
-
-### Angular Signals
-
-Angular Signals are used for local UI state because the game screen primarily needs reactive state for:
-
-* Board.
-* Current player.
-* Game status.
-* Winner.
-* Move history.
-* Scoreboard.
-
-The backend remains responsible for authoritative state.
-
-### No SignalR
-
-SignalR was intentionally not implemented.
-
-The assessment does not require independent clients to receive server-pushed game updates. REST responses are sufficient for the current UI.
-
-Angular Signals provide client-side reactivity but are not a replacement for server-side push technology.
-
----
-
-## 10. Clarifications and Assumptions
-
-The following assumptions were made where the assessment requirements did not prescribe an exact implementation.
-
-### Storage
-
-In-memory storage is used.
-
-No SQL, Cosmos DB, Redis, or other persistent database is required for the assessment.
-
-### Game Session
-
-Game state is associated with a generated game ID.
-
-The backend owns the game state for the lifetime of the running application.
-
-### Two Player Undo
-
-Undo removes the most recent move.
-
-### Computer Mode Undo
-
-Undo removes the human X move and the corresponding computer O move together so that the user returns to the previous meaningful decision point.
-
-### Undo After Completion
-
-Undo is disabled after a game has completed.
-
-This follows the selected assessment interpretation.
-
-### Scoreboard
-
-The scoreboard is maintained for the running application session.
-
-Resetting a game does not reset the scoreboard.
-
-### Scoreboard Idempotency
-
-A completed game contributes to the scoreboard only once, using the game ID to prevent duplicate score updates.
-
-### Computer Strategy
-
-The computer opponent is intentionally deterministic and rule-based rather than AI/ML-driven.
-
-Its priority is:
-
-```text
-Win
- ↓
-Block
- ↓
-Center
- ↓
-Corner
- ↓
-Any available cell
-```
-
-### API Versioning
-
-The API is exposed under:
-
-```text
-/api/v1
-```
-
-This provides a clear version boundary for future API changes.
-
-### Real-Time Communication
-
-Real-time server push was not required by the assessment and is therefore intentionally excluded.
-
----
-
-## 11. Known Limitations
-
-### In-Memory Persistence
-
-Game and scoreboard data are stored in memory.
-
-Therefore:
-
-* Restarting the API loses all games.
-* Restarting the API resets the scoreboard.
-* Multiple backend instances would not share the same game state.
-
-### Single Application Instance
-
-The current implementation is intended for local/single-instance execution.
-
-A distributed deployment would require shared persistent state and a distributed concurrency strategy.
-
-### Basic Computer Opponent
-
-The computer opponent uses deterministic rule-based logic.
-
-It does not implement:
-
-* Minimax.
-* Machine learning.
-* Difficulty levels.
-* Adaptive gameplay.
-
-### No Authentication
-
-The assessment does not require user authentication or authorization.
-
-The API therefore does not currently associate games with authenticated users.
-
-### No Real-Time Multiplayer
-
-The application uses REST APIs.
-
-There is no SignalR/WebSocket-based server push for independently connected clients.
-
-### No Persistent Scoreboard
-
-The scoreboard exists only for the lifetime of the application process.
-
-### Browser Test Environment
-
-Frontend tests use ChromeHeadless through Jasmine/Karma and therefore require a compatible Chrome/Chromium installation in the development or CI environment.
-
----
-
-## 12. Future Improvements
-
-If this application were extended beyond the assessment, the following improvements could be considered.
-
-### Persistent Storage
-
-Replace the in-memory repositories with:
-
-* SQL Server + Entity Framework Core.
-* Azure Cosmos DB.
-* PostgreSQL.
-
-The existing repository abstractions allow persistence to be introduced without moving game rules into the infrastructure layer.
-
-### Distributed Deployment
-
-For multiple API instances:
-
-```text
-Angular
-   ↓
-Load Balancer
-   ↓
-API Instance 1
-API Instance 2
-API Instance 3
-   ↓
-Shared Database / Distributed Cache
-```
-
-Game state and concurrency would need to be handled using shared storage.
-
-### Authentication and Authorization
-
-Introduce:
-
-* Microsoft Entra ID / OAuth 2.0 / OpenID Connect.
-* User-specific games.
-* User-specific scoreboards.
-* Authorization policies.
-
-### SignalR
-
-SignalR could be introduced for:
-
-* Real-time multiplayer.
-* Server-pushed game updates.
-* Multiple clients viewing the same game.
-* Live scoreboard updates.
-
-### Improved Computer AI
-
-Introduce:
-
-* Minimax.
-* Alpha-beta pruning.
-* Difficulty levels.
-* Randomized moves at lower difficulty.
-
-### Persistent Game History
-
-Store completed games and moves for:
-
-* Game replay.
-* Historical statistics.
-* User game history.
-* Analytics.
-
-### CI/CD
-
-Introduce an automated pipeline that performs:
-
-```text
-Build
- ↓
-Unit Tests
- ↓
-Integration Tests
- ↓
-Frontend Tests
- ↓
-Security/Dependency Checks
- ↓
-Package
- ↓
-Deploy
-```
-
-### Observability
-
-Extend OpenTelemetry with centralized:
-
-* Logs.
-* Metrics.
-* Distributed traces.
-* Application dashboards.
-* Alerting.
-
-### API Enhancements
-
-Potential future improvements include:
-
-* More granular API error codes.
-* Pagination for historical games.
-* API authentication.
-* Rate limiting.
-* API documentation examples.
-* Contract testing.
-
----
-
-# Project Structure
-
-```text
 tic-tac-toe-assessment/
-│
 ├── backend/
 │   ├── TicTacToe.Domain/
 │   ├── TicTacToe.Application/
@@ -1052,123 +533,22 @@ tic-tac-toe-assessment/
 │   ├── TicTacToe.Api/
 │   ├── TicTacToe.Tests/
 │   └── TicTacToe.sln
-│
 ├── frontend/
 │   ├── src/
-│   │   ├── app/
-│   │   └── environments/
 │   ├── angular.json
 │   ├── package.json
 │   └── proxy.conf.json
-│
-├── .github/
-│   └── workflows/
-│
+├── .github/workflows/
 ├── global.json
 ├── API.md
 ├── REQUIREMENTS-TRACEABILITY.md
 ├── CONTRIBUTING.md
 └── README.md
-```
 
----
+Supporting Documentation
 
-# Quick Start
+API.md — detailed API contract
 
-## Backend
+REQUIREMENTS-TRACEABILITY.md — assignment-to-implementation mapping
 
-```bash
-cd backend
-dotnet restore
-dotnet build
-dotnet run --project TicTacToe.Api --launch-profile http
-```
-
-Backend:
-
-```text
-http://localhost:62167
-```
-
-Swagger:
-
-```text
-http://localhost:62167/swagger
-```
-
-## Frontend
-
-Open another terminal:
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Frontend:
-
-```text
-http://localhost:4200
-```
-
-## Tests
-
-Backend:
-
-```bash
-cd backend
-dotnet test
-```
-
-Frontend:
-
-```bash
-cd frontend
-npm test
-```
-
-Production frontend build:
-
-```bash
-npm run build
-```
-
----
-
-# Submission Checklist
-
-Before submitting the repository:
-
-```text
-[ ] dotnet restore
-[ ] dotnet build
-[ ] dotnet test
-
-[ ] npm install
-[ ] npm run build
-[ ] npm test
-
-[ ] Verify backend starts successfully
-[ ] Verify frontend starts successfully
-[ ] Verify Swagger at http://localhost:62167/swagger
-[ ] Verify /health/live
-[ ] Verify /health/ready
-
-[ ] Review API.md
-[ ] Review REQUIREMENTS-TRACEABILITY.md
-[ ] Review CONTRIBUTING.md
-
-[ ] Confirm no secrets or credentials are committed
-[ ] Confirm node_modules/, bin/, obj/, dist/ and generated files are ignored
-[ ] Confirm README reflects the final implementation
-```
-
----
-
-# Repository Documentation
-
-* `README.md` — Project overview, setup, testing, design and implementation notes.
-* `API.md` — Detailed API contract and endpoint documentation.
-* `REQUIREMENTS-TRACEABILITY.md` — Mapping between assessment requirements and implementation.
-* `CONTRIBUTING.md` — Development and code-review guidelines.
+CONTRIBUTING.md — development and review guidelines

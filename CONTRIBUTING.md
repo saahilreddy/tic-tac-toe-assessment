@@ -32,13 +32,12 @@ Distinguish:
 
 ## Tests
 
-New domain rules should have domain unit tests.
+### Tests
 
-New use-case behavior should have Application tests.
-
-REST contract changes should have API integration tests.
-
-User-visible flows should have Playwright coverage where practical.
+- Domain business rules should have unit-test coverage.
+- Application use cases should have appropriate automated tests.
+- REST API behavior should have integration-test coverage where applicable.
+- Angular behavior should be covered with Jasmine/Karma tests where appropriate.
 
 ## Pull request checklist
 

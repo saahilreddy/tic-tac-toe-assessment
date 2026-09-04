@@ -30,7 +30,7 @@ This document maps the supplied Tic Tac Toe assessment requirements and the arch
 | Frontend uses REST | `GameApiService` with `HttpClient` |
 | UI state | Angular Signals |
 | Backend source of truth | UI replaces its game signal with returned API state |
-| Tests | Domain, Application, API integration, browser E2E |
+| Tests | Domain unit, Application, API integration, Angular Jasmine/Karma  |
 | README | detailed run/config/design/test documentation |
 | API documentation | `API.md` + Swagger |
 
@@ -57,7 +57,7 @@ This document maps the supplied Tic Tac Toe assessment requirements and the arch
 | Structured logging | JSON console logging + MediatR logging behavior |
 | Health checks | `/health/live`, `/health/ready` |
 | Swagger/OpenAPI | Swashbuckle + Swagger UI |
-| Automated tests | unit/application/integration/E2E layers |
+| Automated tests | Domain, Application, API integration, and frontend unit testss |
 | Cross-cutting infrastructure | logging, exception handling, authorization pipeline, health checks, OpenTelemetry |
 
 ## Intentional non-implementation
