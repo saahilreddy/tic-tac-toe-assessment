@@ -16,7 +16,7 @@ export function getApiErrorMessage(error: unknown): string {
     }
 
     if (error.status === 0) {
-      return 'Cannot connect to the backend. Start the ASP.NET Core API on http://localhost:5000.';
+      return 'Cannot connect to the backend.';
     }
 
     if (error.status === 409) {
