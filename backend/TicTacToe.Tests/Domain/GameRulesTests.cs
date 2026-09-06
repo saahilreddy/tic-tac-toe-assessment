@@ -1,4 +1,7 @@
+using TicTacToe.Application.Commands;
+using TicTacToe.Application.Mappings;
 using TicTacToe.Domain;
+using TicTacToe.Infrastructure.Persistence;
 using Xunit;
 
 namespace TicTacToe.Tests.Domain;
@@ -98,5 +101,25 @@ public sealed class GameRulesTests
         Assert.Equal(Player.O, game.CurrentPlayer);
         Assert.Empty(game.Board[4]);
         Assert.Single(game.Moves);
+    }
+    
+    [Fact]
+    public void Valid_move_switches_turn_to_other_player()
+    {
+        var game = new Game(Guid.NewGuid(), GameMode.TwoPlayer);
+
+        game.ApplyMove(new Move(1, Player.X, 0, 0));
+
+        Assert.Equal(Player.O, game.CurrentPlayer);
+    }
+    [Fact]
+    public void Second_valid_move_switches_turn_back_to_x()
+    {
+        var game = new Game(Guid.NewGuid(), GameMode.TwoPlayer);
+
+        game.ApplyMove(new Move(1, Player.X, 0, 0));
+        game.ApplyMove(new Move(2, Player.O, 1, 1));
+
+        Assert.Equal(Player.X, game.CurrentPlayer);
     }
 }
